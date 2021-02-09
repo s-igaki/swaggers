@@ -1,0 +1,133 @@
+openapi: 3.0.1
+info:
+  title: api list
+  description: 'API List'
+  contact:
+    name: "igakishusei"
+  version: 1.0.0
+  
+servers:
+- url: http://localhost:8000
+
+tags:
+- name: todo
+  description: todo単体のAPI
+- name: todoList
+  description: todo全体のAPI
+
+paths:
+  '/api/v1/todo/':
+    get:
+      tags:
+      - todoList
+      summary: todoリスト一覧を取得する
+      operationId: getTodoList
+      responses:
+        200:
+          $ref: '#/components/responses/200todoList'
+        400:
+          $ref: '#/components/responses/badRequest'
+        404:
+          $ref: '#/components/responses/notFound'
+    post:
+      tags:
+      - todoList
+      summary: todoリストを追加する
+      operationId: postTodoList
+      responses:
+        200:
+          $ref: '#/components/responses/success'
+        400:
+          $ref: '#/components/responses/badRequest'
+        404:
+          $ref: '#/components/responses/notFound'
+  '/api/v1/todo/{todo_id}':
+    get:
+      tags:
+      - todo
+      summary: idのtodoを取得する
+      parameters:
+        - $ref: '#/components/parameters/todoId'
+      operationId: getTodo
+      responses:
+        200:
+          $ref: '#/components/responses/200todo'
+        400:
+          $ref: '#/components/responses/badRequest'
+        404:
+          $ref: '#/components/responses/notFound'
+    delete:
+      tags:
+      - todo
+      summary: todoを削除する
+      parameters:
+        - $ref: '#/components/parameters/todoId'
+      operationId: deleteTodo
+      responses:
+        200:
+          $ref: '#/components/responses/success'
+        400:
+          $ref: '#/components/responses/badRequest'
+        404:
+          $ref: '#/components/responses/notFound'
+        
+
+
+
+components:
+  parameters:
+    todoId:
+      in: path
+      name: todo_id
+      schema:
+        type: integer
+      required: true
+  responses:
+    200todoList:
+      description: TODO一覧
+      content: 
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              oneOf:
+                - $ref: '#/components/schemas/Todo'
+    200todo:
+      description: TODO一覧
+      content: 
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Todo'
+
+    success:
+      description: TODO一覧
+      content: {}
+    badRequest:
+      description: Request Bodyのパラメータに問題あり
+      content: {}
+    notFound:
+      description: Not found
+      content:
+        content: {}
+  schemas:
+    Todo:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 100
+        title:
+          type: string
+          example: "鉛筆を買う"
+        description:
+          type: string
+          example: "コクヨの鉛筆を有楽町に買いに行く"
+        place:
+          type: string
+          example: "https://goo.gl/maps/3hQwyEDfRmiorKqD8"
+        tag:
+          type: string
+          example: "買い物"
+
+
